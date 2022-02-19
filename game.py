@@ -9,16 +9,13 @@ from view import View
 class Game:
 
     def __init__(self):
-        self.numSq = 175
-        self.maxAgents = 6000
-        self.board = Board(self.numSq)
-        self.agents = set()
-        self.runaway = False
         self.view = View(self)
+        self.board = Board(self.view.numSq)
+        self.agents = set()
         self.view.window.mainloop()
 
     def createNewAgent(self, agent=None):
-        if len(self.agents) >= self.maxAgents:
+        if len(self.agents) >= self.view.maxAgents:
             return
 
         # create a new agent
@@ -64,9 +61,6 @@ class Game:
 
         return emptyAdj
 
-    def changeRunaway(self):
-        self.runaway = not self.runaway
-
     def gameLoop(self):
         while (1):
             while (len(self.agents) < 50):
@@ -96,7 +90,7 @@ class Game:
                 opponent = random.sample(neighbors, 1)[0]
                 agent.play(opponent)
 
-                if self.runaway:
+                if self.view.runaway.get():
                     if not agent.memory[opponent]:
                         self.board.move(agent)
                     if not opponent.memory[agent]:

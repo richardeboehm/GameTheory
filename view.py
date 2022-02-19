@@ -16,7 +16,8 @@ class View:
         self.window.title("gameTheory.py")
         self.canvas = tkinter.Canvas(self.window, width=self.boardSize, height=self.boardSize, bg='#444444')
         self.canvas.pack()
-        tkinter.Checkbutton(self.window, text="Runaway", command=self.game.changeRunaway).pack()
+        self.runaway = tkinter.BooleanVar()
+        tkinter.Checkbutton(self.window, text="Runaway", variable=self.runaway).pack()
         tkinter.Button(self.window, text="START", command=self.game.gameLoop).pack()
 
     def displayNewAgent(self, newAgent, colorval):
