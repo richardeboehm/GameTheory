@@ -27,10 +27,8 @@ class Board:
                         if self.Positions[i][j] is None:
                             emptyAdj.append((i, j))
 
-        # CASE: no empty adjacent squares -- try again with wider margin
-        if len(emptyAdj) == 0:
-            return self.findAdj(agent, agentRange + 1)
-
+        if not emptyAdj:
+            emptyAdj = [(agent.x, agent.y)]
         return emptyAdj
 
     def move(self, agent):

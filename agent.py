@@ -3,9 +3,11 @@ from random import random
 
 class Agent:
 
-    def __init__(self, canvas, x, y):
-        # agents have a 50% chance of being cooperative
-        self.strategy = random()
+    def __init__(self, canvas, x, y, strategy=None):
+        if (strategy and random() > .05):
+            self.strategy = strategy
+        else:
+            self.strategy = random()
         self.x = x
         self.y = y
         self.life = 25
