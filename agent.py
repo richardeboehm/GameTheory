@@ -3,7 +3,7 @@ from random import random
 
 class Agent:
 
-    def __init__(self, canvas, x, y, strategy=None):
+    def __init__(self, x, y, strategy=None):
         if (strategy and random() > .05):
             self.strategy = strategy
         else:
@@ -11,7 +11,6 @@ class Agent:
         self.x = x
         self.y = y
         self.life = 25
-        self.canvas = canvas
         self.reference = None
         self.memory = {}
 

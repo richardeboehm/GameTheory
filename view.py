@@ -14,44 +14,28 @@ class View:
         #set up the canvas
         self.window = tkinter.Tk()
         self.window.title("gameTheory.py")
-        self.canvas = tkinter.Canvas(self.window, width=self.game.boardSize, height=self.game.boardSize, bg='gray')
+        self.canvas = tkinter.Canvas(self.window, width=self.boardSize, height=self.boardSize, bg='#444444')
         self.canvas.pack()
-        self.runawayButton = tkinter.BooleanVar()
         tkinter.Checkbutton(self.window, text="Runaway", command=self.game.changeRunaway).pack()
-        tkinter.Button(self.window, text="START", command=lambda:self.game.gameLoop(self.canvas)).pack()
+        tkinter.Button(self.window, text="START", command=self.game.gameLoop).pack()
 
-    def multiply(self, agent):
-        # CASE: maxAgents reached -- don't multiply
-        if len(self.agents) >= self.maxAgents:
-            agent.life = 25
-            return
+    def displayNewAgent(self, newAgent, colorval):
+        return self.canvas.create_oval(newAgent.x * self.boardSize/self.numSq,
+                                    newAgent.y * self.boardSize/self.numSq,
+                                    newAgent.x * self.boardSize/self.numSq + self.boardSize/self.numSq,
+                                    newAgent.y * self.boardSize/self.numSq + self.boardSize/self.numSq,
+                                    fill=colorval)
 
-        # cut life in half and create new agent
-        agent.life = 25
-        emptyAdj = self.findAdj(agent, 1)
-        newPosition = random.sample(emptyAdj, 1)[0]
-        newAgent = Agent(agent.canvas, newPosition[0], newPosition[1])
+    def removeAgent(self, agent):
+        self.canvas.delete(agent.reference)
 
-        # five percent chance that new agent mutates to new strategy
-        if random.random() > .01:
-            newAgent.strategy = agent.strategy
-
-        # determine color of agent and draw it on the canvas
-        self.addAgent(newAgent)
-        colorval = '#%02x%02x%02x' % (floor(255 - (newAgent.strategy * 255)), floor(newAgent.strategy * 255), 0)
-        newAgent.reference = canvas.create_oval(newAgent.x * self.boardSize/self.numSq,
-                                                newAgent.y * self.boardSize/self.numSq,
-                                                newAgent.x * self.boardSize/self.numSq + self.boardSize/self.numSq,
-                                                newAgent.y * self.boardSize/self.numSq + self.boardSize/self.numSq,
-                                                fill=colorval)
-
-    def updateBoard(self, canvas, agents):
+    def updateBoard(self, agents):
         # redraw all agents and update the canvas
         for agent in agents:
-            canvas.coords(agent.reference,
+            self.canvas.coords(agent.reference,
                         agent.x * self.boardSize/self.numSq,
                         agent.y * self.boardSize/self.numSq,
                         agent.x * self.boardSize/self.numSq + self.boardSize/self.numSq,
                         agent.y * self.boardSize/self.numSq + self.boardSize/self.numSq)
-        canvas.update()
+        self.canvas.update()
 

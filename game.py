@@ -5,15 +5,14 @@ from agent import Agent
 from board import Board
 from view import View
 
+
 class Game:
 
     def __init__(self):
         self.numSq = 175
-        self.boardSize = 450
         self.maxAgents = 6000
         self.board = Board(self.numSq)
         self.agents = set()
-        self.total = 0
         self.runaway = False
         self.view = View(self)
         self.view.window.mainloop()
@@ -29,31 +28,24 @@ class Game:
         if agent:
             newPosition = random.sample(self.findAdj(agent, 1), 1)[0]
             newStrategy = agent.strategy
-        newAgent = Agent(self.view.canvas, newPosition[0], newPosition[1], newStrategy)
+        newAgent = Agent(newPosition[0], newPosition[1], newStrategy)
 
         # find an empty position to place the agent
         while self.board.Positions[newAgent.x][newAgent.y]:
             newAgent.x = floor(random.random() * len(self.board.Positions))
             newAgent.y = floor(random.random() * len(self.board.Positions[0]))
 
-        # determine color of agent and draw it on the canvas
+        # determine color of agent and add it to the view
         colorval = '#%02x%02x%02x' % (floor(255 - (newAgent.strategy * 255)), floor(newAgent.strategy * 255), 0)
-        newAgent.reference = self.view.canvas.create_oval(newAgent.x * self.boardSize/self.numSq,
-                                            newAgent.y * self.boardSize/self.numSq,
-                                            newAgent.x * self.boardSize/self.numSq + self.boardSize/self.numSq,
-                                            newAgent.y * self.boardSize/self.numSq + self.boardSize/self.numSq,
-                                            fill=colorval)
+        newAgent.reference = self.view.displayNewAgent(newAgent, colorval)
 
         self.board.add(newAgent)
         self.agents.add(newAgent)
-        self.total += newAgent.strategy
-
 
     def kill(self, agent):
-        agent.canvas.delete(agent.reference)
+        self.view.removeAgent(agent)
         self.board.remove(agent)
         self.agents.remove(agent)
-        self.total -= agent.strategy
         agent.die()
 
     def findAdj(self, agent, agentRange):
@@ -75,7 +67,7 @@ class Game:
     def changeRunaway(self):
         self.runaway = not self.runaway
 
-    def gameLoop(self, canvas):
+    def gameLoop(self):
         while (1):
             while (len(self.agents) < 50):
                 self.createNewAgent()
@@ -122,9 +114,8 @@ class Game:
                     self.createNewAgent(opponent)
                     opponent.life = 25
 
-            # redraw all agents and update the canvas
-            self.view.updateBoard(canvas, self.agents)
-            # print(self.total / len(self.agents))
+            # update the view
+            self.view.updateBoard(self.agents)
 
 
 if __name__ == "__main__":
