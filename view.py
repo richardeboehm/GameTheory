@@ -1,7 +1,6 @@
 import tkinter
 from math import floor
 from agent import Agent
-from board import Board
 
 class View:
 
@@ -30,7 +29,7 @@ class View:
     def removeAgent(self, agent):
         self.canvas.delete(agent.reference)
 
-    def updateBoard(self, agents):
+    def updateView(self, agents):
         # redraw all agents and update the canvas
         for agent in agents:
             self.canvas.coords(agent.reference,

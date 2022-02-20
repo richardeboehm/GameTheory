@@ -1,7 +1,7 @@
 import random
 
 
-class Board:
+class Model:
 
     def __init__(self, size):
         #initialized with a 2-d array
@@ -10,12 +10,16 @@ class Board:
             self.Positions.append([])
             for j in range(size):
                 self.Positions[i].append(None)
+        self.agents = set()
 
     def add(self, agent):
         self.Positions[agent.x][agent.y] = agent
+        self.agents.add(agent)
 
     def remove(self, agent):
         self.Positions[agent.x][agent.y] = None
+        self.agents.remove(agent)
+        agent.die()
 
     def findAdj(self, agent, agentRange):
         emptyAdj = []
