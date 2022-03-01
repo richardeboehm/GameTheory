@@ -2,10 +2,10 @@ from random import random
 
 class Agent:
 
-    # Probability that a new agent mutates from its parent's strategy
     CHANCE_TO_MUTATE = .05
+    BINARY = False
 
-    def __init__(self, x, y, strategy=None):
+    def __init__(self, x, y, memory, strategy=None):
         if (strategy and random() > self.CHANCE_TO_MUTATE):
             self.strategy = strategy
         else:
@@ -13,10 +13,23 @@ class Agent:
         self.x = x
         self.y = y
         self.life = 25
+        self.memory = None
+        if memory:
+            self.memory = dict()
         self.reference = None
 
     def cooperate(self, opponent):
-        return self.strategy > .5
+        strategy = self.strategy
+        if self.memory is not None and opponent in self.memory:
+            if self.memory[opponent]:
+                strategy *= 1.5
+            else:
+                strategy /= 2
+
+        if self.BINARY:
+            return strategy > .5
+        else:
+            return strategy > random()
 
     def play(self, opponent):
         selfStrat = self.cooperate(opponent)
@@ -38,7 +51,14 @@ class Agent:
             self.life -= 2
             opponent.life -= 2
 
+        if self.memory is not None:
+            self.memory[opponent] = opponentStrat
+            opponent.memory[self] = selfStrat
+
         return opponentStrat
 
     def die(self):
-        del self
+        if self.memory is not None:
+            for agent in self.memory:
+                if agent.memory is not None and self in agent.memory:
+                    agent.memory.pop(self)

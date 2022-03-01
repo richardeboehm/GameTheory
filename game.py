@@ -9,9 +9,20 @@ from view import View
 class Game:
 
     def __init__(self):
-        self.view = View(self)
+        self.view = View(self, self.changeBinary, self.changeMemory)
         self.model = Model(self.view.numSq)
         self.view.window.mainloop()
+        self.maxAgents = 500
+
+    def changeBinary(self):
+        Agent.BINARY = not Agent.BINARY
+
+    def changeMemory(self):
+        for agent in self.model.agents:
+            if self.view.memory.get():
+                agent.memory = dict()
+            else:
+                agent.memory = None
 
     def createNewAgent(self, agent=None):
         if len(self.model.agents) >= self.view.maxAgents:
@@ -24,7 +35,7 @@ class Game:
         if agent:
             newPosition = random.sample(self.findAdj(agent, 1), 1)[0]
             newStrategy = agent.strategy
-        newAgent = Agent(newPosition[0], newPosition[1], newStrategy)
+        newAgent = Agent(newPosition[0], newPosition[1], self.view.memory.get(), newStrategy)
 
         # find an empty position to place the agent
         while self.model.Positions[newAgent.x][newAgent.y]:
