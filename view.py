@@ -8,7 +8,7 @@ class View:
         self.game = game
         self.numSq = 175;
         self.boardSize = 525
-        self.maxAgents = 6000
+        self.maxAgents = 1500
         self.total = 0
         #set up the canvas
         self.window = tkinter.Tk()

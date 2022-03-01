@@ -12,7 +12,6 @@ class Game:
         self.view = View(self, self.changeBinary, self.changeMemory)
         self.model = Model(self.view.numSq)
         self.view.window.mainloop()
-        self.maxAgents = 500
 
     def changeBinary(self):
         Agent.BINARY = not Agent.BINARY
